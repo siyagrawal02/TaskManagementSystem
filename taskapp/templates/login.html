@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 20px; /* Adjusted margin for responsiveness */
+        }
+
+        form {
+            margin: auto;
+            margin-top: 10%;
+            padding: 10px;
+            box-shadow: 0 0 2px 0.5px  #1F2937;
+            border-radius: 10px;
+            width: 80%; /* Adjusted width for responsiveness */
+            max-width: 400px; /* Added maximum width for smaller screens */
+            box-sizing: border-box; /* Ensures padding and border are included in the width */
+        }
+
+        hr {
+            border-color: #1F2937;
+        }
+
+        input[type=email], input[type=password] {
+            padding: 10px;
+            border: 2px;
+            border-radius: 10px;
+            width: calc(100% - 20px); /* Adjusted width for padding */
+            box-sizing: border-box; /* Ensures padding and border are included in the width */
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 1px black;
+        }
+
+        input[type=submit] {
+            appearance: none;
+            padding: 10px;
+            border: none;
+            background-color: #1F2937;
+            color: white;
+            font-weight: 600;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        a {
+            text-decoration: none;
+            color: #1F2937; /* Changed link color for better visibility */
+        }
+
+        .messages {
+            list-style: none;
+            margin-top: 10px;
+            padding: 10px; /* Remove padding to eliminate space for bullet points */
+            display: inline-block;
+            border-radius: 5px;
+            background-color: #DFF2BF;
+            color: #4F8A10;
+        }
+        
+        /* Media Queries for responsiveness */
+        @media screen and (max-width: 600px) {
+            form {
+                width: 100%; /* Full width on smaller screens */
+                margin-top: 20%; /* Adjusted margin for centering */
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <form method="post">
+        {% csrf_token %}
+        <h2><center>Log In</center></h2>
+        <hr>
+        <br>
+        <label for="Username"> Email:</label><br><br>
+        <input name="uname" type="email" placeholder="Enter your email" required><br><br>
+        <label for="password"> Password: </label><br><br>
+        <input name="password" type="password" placeholder="Enter your password" required> <br><br>
+        {% if message %}
+        <p class="error">{{ message }}</p>
+        {% endif %}
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+        <a href="{% url 'forgot_password' %}"><center>Forgot password?</center></a>
+        <br>
+      
+        <input type="submit" value="Login">
+        <br><br>
+        <center> Not a member? <a href="{% url 'signup' %}">Signup now</a></center>
+    </form>
+
+</body>    
+</html>

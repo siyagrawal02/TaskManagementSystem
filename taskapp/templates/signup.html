@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup - Task Management System</title>
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 50px 20px; /* Adjusted margin for responsiveness */
+        }
+
+        form {
+            margin: auto;
+            padding: 10px;
+            box-shadow: 0 0 2px 0.5px  #1F2937;
+            border-radius: 10px;
+            width: 80%; /* Adjusted width for responsiveness */
+            max-width: 400px; /* Added maximum width for smaller screens */
+            box-sizing: border-box; /* Ensures padding and border are included in the width */
+        }
+
+        hr {
+            border-color: #1F2937;
+        }
+
+        input[type=email], input[type=password], input[type=text] {
+            padding: 10px;
+            border: 2px;
+            border-radius: 10px;
+            width: 100%;
+            box-sizing: border-box; /* Ensures padding is included in the width */
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 1px black;
+        }
+
+        input[type=submit] {
+            appearance: none;
+            padding: 10px;
+            border: none;
+            background-color: #1F2937;
+            color: white;
+            font-weight: 600;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        /* Message styling */
+        .message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .error-message {
+            background-color: #FFD2D2;
+            color: #D8000C;
+        }
+
+        .success-message {
+            background-color: #DFF2BF;
+            color: #4F8A10;
+        }
+
+        /* Media Queries for responsiveness */
+        @media screen and (max-width: 600px) {
+            form {
+                width: 100%; /* Full width on smaller screens */
+                margin: 20px auto; /* Adjusted margin for centering */
+            }
+        }
+    </style>
+</head>
+<body>
+  
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <center>
+            <h2>Sign Up</h2>
+        </center>
+        <hr>
+
+        <label for="fname">First Name:</label><br><br>
+        <input name="firstname" type="text" placeholder="Enter your First Name" required><br><br>
+
+        <label for="lname">Last Name:</label><br><br>
+        <input name="lastname" type="text" placeholder="Enter your Last Name" required><br><br>
+
+        <label for="phone">Phone: </label><br><br>
+        <input name="phone" type="text" placeholder="Enter your phone no" required><br><br>
+
+        <label for="email">Email:</label><br><br>
+        <input name="email" type="email" placeholder="Enter your email" required><br><br>
+
+        <label for="password">Password:</label><br><br>
+        <input type="password" name="password" placeholder="Enter password" required><br><br>
+
+        {% if error_msg %}
+        <div class="message error-message">
+            {{ error_msg }}
+        </div>
+        {% endif %}
+
+        {% if msg %}
+        <div class="message success-message">
+            {{ msg }}
+        </div>
+        {% endif %}
+
+        <br>
+        <input type="submit" value="Sign Up">
+        <br><br>
+        <center> Already have an account? <a href="{% url 'login' %}">Log In</a></center>
+
+    </form>
+
+    <script>
+        /*===== LOGIN SHOW and HIDDEN =====*/
+        const signUp = document.getElementById('sign-up'),
+            signIn = document.getElementById('sign-in'),
+            loginIn = document.getElementById('login-in'),
+            loginUp = document.getElementById('login-up')
+
+        signUp.addEventListener('click', () => {
+            // Remove classes first if they exist
+            loginIn.classList.remove('block')
+            loginUp.classList.remove('none')
+
+            // Add classes
+            loginIn.classList.toggle('none')
+            loginUp.classList.toggle('block')
+        })
+
+        signIn.addEventListener('click', () => {
+            // Remove classes first if they exist
+            loginIn.classList.remove('none')
+            loginUp.classList.remove('block')
+
+            // Add classes
+            loginIn.classList.toggle('block')
+            loginUp.classList.toggle('none')
+        })
+    </script>
+</body>
+</html>
