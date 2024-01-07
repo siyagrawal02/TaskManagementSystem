@@ -52,7 +52,7 @@
         input[type="radio"] {
             margin-top: 5px;
             margin-right: 5px;
-            transform: translateY(2px); /* Adjust the vertical alignment */
+            transform: translateY(2px); /* Adjusting the vertical alignment */
         }
 
         label.radio-label {
@@ -99,7 +99,7 @@
 <body>
 
     <h1>Update Task</h1>
-    <form method="post" action="{% url 'update' task.id %}">
+    <form method="post" action="{% url 'updateTask' task.id %}">
         {% csrf_token %}
 
         <label for="title">Title:</label>

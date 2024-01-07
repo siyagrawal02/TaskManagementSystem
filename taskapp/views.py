@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404,render,redirect
 from django.http import HttpResponse
 from .models import User,Task
 from django.core.mail import send_mail,BadHeaderError
-from django.conf import settings
 import random
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages 
@@ -16,6 +15,7 @@ from taskapp.serializers import UserSerializer,TaskSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
 import re
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset=User.objects.all()
     serializer_class=UserSerializer
@@ -39,7 +39,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class=TaskSerializer
     
 def home(request):
-    return render(request, 'index.html')
+    return render(request, 'home.html')
    
 
 def login(request):
@@ -49,25 +49,25 @@ def login(request):
         try:
             user = User.objects.get(email=email, password=password)
             request.session['user_id'] = user.id
-            return redirect('home_after_login', user_id=user.id)
+            return redirect('taskList', user_id=user.id)
         except User.DoesNotExist:
             return render(request, 'login.html', {'message': 'Invalid credentials. Please try again.'})
     return render(request, 'login.html')
 
-def home_after_login(request, user_id):
+def taskList(request, user_id):
     user_id_from_session = request.session.get('user_id')
     
     # Check if the user is accessing their own tasks
     if user_id_from_session and user_id_from_session == int(user_id):
         tasks = Task.objects.filter(user=user_id)
         context = {'tasks': tasks}
-        return render(request, 'home_after_login.html', context)
+        return render(request, 'taskList.html', context)
     else:
         # Redirect to the login page if the user is not authenticated
         return redirect('login')
 
 
-def addtask(request):
+def addTask(request):
     user_id = request.session.get('user_id')
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -93,9 +93,9 @@ def addtask(request):
         )
 
         # Redirect to the task management page
-        return redirect('home_after_login', user_id=user_id)
+        return redirect('taskList', user_id=user_id)
 
-    return render(request, 'addtask.html')
+    return render(request, 'addTask.html')
 
 def details(request, taskId):
     # Get the task object or return a 404 error if it doesn't exist
@@ -107,7 +107,7 @@ def details(request, taskId):
     # Render the task details template with the context
     return render(request, 'details.html', context)
     
-def update(request, taskId):
+def updateTask(request, taskId):
     task = get_object_or_404(Task, id=taskId)
     user_id = request.session.get('user_id')
     
@@ -122,12 +122,12 @@ def update(request, taskId):
         task.save()
 
         # Redirect to the task management page or any other page you prefer
-        return redirect('home_after_login', user_id)
+        return redirect('taskList', user_id)
 
     # Render the update form with the current task data
-    return render(request, 'update.html', {'task': task, 'user_id': user_id})
+    return render(request, 'updateTask.html', {'task': task, 'user_id': user_id})
 
-def deltask(request, taskId):
+def delTask(request, taskId):
     # Get the task to be deleted
     task = Task.objects.get(id=taskId)
     user_id = request.session.get('user_id')
@@ -135,9 +135,9 @@ def deltask(request, taskId):
     task.delete()
 
     # Redirect to the task management page after deletion
-    return redirect('home_after_login', user_id)
+    return redirect('taskList', user_id)
  
-def logoutuser(request):
+def logoutUser(request):
     # Logout the user
     logout(request)
 
@@ -183,7 +183,7 @@ def signup(request):
     # Render the initial form
     return render(request, 'signup.html')
 
-def forgot_password(request):
+def forgotPassword(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         # Check if user with this email exists
@@ -191,7 +191,7 @@ def forgot_password(request):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             messages.error(request, 'There is no user with this email address.')
-            return render(request, 'forgot_password.html')
+            return render(request, 'forgotPassword.html')
         # Generate OTP
         otp = str(random.randint(100000, 999999))
         # Store OTP in session
@@ -209,10 +209,10 @@ def forgot_password(request):
         except BadHeaderError:
             return HttpResponse('Invalid header found.')
         # Redirect to verify OTP view
-        return redirect('verify_otp')
-    return render(request, 'forgot_password.html')
+        return redirect('verifyOtp')
+    return render(request, 'forgotPassword.html')
 
-def verify_otp(request):
+def verifyOtp(request):
     if request.method == 'POST':
         entered_otp = request.POST['otp']
         stored_otp = request.session.get('otp')
@@ -224,21 +224,21 @@ def verify_otp(request):
         
             # Redirect to reset password view
             messages.success(request, 'OTP verified. Please enter a new password.')
-            return redirect('reset_password')
+            return redirect('resetPassword')
         else:
             # OTP is invalid, show an error message
             messages.error(request, 'Invalid OTP. Please try again.')
-    return render(request, 'verify_otp.html')
+    return render(request, 'verifyOtp.html')
 
 
 
-def is_valid_password(password):
+def isValidPassword(password):
     # Check if the password has one uppercase, one lowercase, one digit, and one special character
     if re.match(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{6,}$', password):
         return True
     return False
 
-def reset_password(request):
+def resetPassword(request):
     reset_success = False
 
     if request.method == 'POST':
@@ -249,7 +249,7 @@ def reset_password(request):
         # Check if passwords match
         if new_password != confirm_password:
             messages.error(request, 'Passwords do not match.')
-        elif not is_valid_password(new_password):
+        elif not isValidPassword(new_password):
             messages.error(request, 'Password must have one uppercase letter, one lowercase letter, one digit, one special character, and be at least 6 characters long.')
         else:
             try:
@@ -271,4 +271,4 @@ def reset_password(request):
             except User.DoesNotExist:
                 messages.error(request, 'User with the given email does not exist.')
 
-    return render(request, 'reset_password.html', {'reset_success': reset_success})
+    return render(request, 'resetPassword.html', {'reset_success': reset_success})

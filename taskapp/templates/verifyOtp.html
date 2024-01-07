@@ -74,13 +74,13 @@ button[type="submit"]:hover {
 }
 @media screen and (max-width: 600px) {
   form {
-      padding: 15px; /* Adjust padding for smaller screens */
+      padding: 15px; /* Adjusting padding for smaller screens */
   }
 }
 
 @media screen and (max-width: 400px) {
   input[type="text"] {
-      font-size: 14px; /* Adjust font size for smaller screens */
+      font-size: 14px; /* Adjusting font size for smaller screens */
   }
 }
     </style>
@@ -89,7 +89,7 @@ button[type="submit"]:hover {
 
 {% block content %}
   <h2><center>Verify OTP</center></h2>
-  <form method="post" action="{% url 'verify_otp' %}">
+  <form method="post" action="{% url 'verifyOtp' %}">
     {% csrf_token %}
     <label for="otp">Enter the OTP sent to your registered email address:</label>
     <input type="text" name="otp" id="otp" required>

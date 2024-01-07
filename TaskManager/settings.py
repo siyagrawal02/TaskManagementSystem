@@ -134,16 +134,16 @@ EMAIL_HOST_USER = 'sia2121181@sicsr.ac.in'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = 'SICSR@2024'
+EMAIL_HOST_PASSWORD = ''
 DEFAULT_FROM_EMAIL='sia2121181@sicsr.ac.in'
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    # ],
     'DEFAULT_RENDERER_CLASSES':[
         'rest_framework.renderers.JSONRenderer'
     ]
