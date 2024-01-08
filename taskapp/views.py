@@ -256,18 +256,13 @@ def resetPassword(request):
                 # Get user with this email
                 user = User.objects.get(email=email)
 
-                # Set new password
-                hashed_password = make_password(new_password)
-                user.password = hashed_password
+                # Set new password as plain text (not recommended for security reasons)
+                user.password = new_password
                 user.save()
 
-                # Authenticate and login user
-                user = User.objects.get(email=email)
-
-                if user:
-                    reset_success = True
-                    messages.success(request, 'Password reset successful. You can now login with your new password.')
-                    return redirect('login')
+                reset_success = True
+                messages.success(request, 'Password reset successful. You can now login with your new password.')
+                return redirect('login')
             except User.DoesNotExist:
                 messages.error(request, 'User with the given email does not exist.')
 
